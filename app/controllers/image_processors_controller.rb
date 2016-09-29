@@ -8,7 +8,7 @@ class ImageProcessorsController < ApplicationController
   end
 
   def init_variables
-		@image_name = 'image_slider_2.png'
+		@image_name = 'house.png'
     @image_path = Rails.root.join('app', 'assets', 'images', @image_name)
 
     image1 = MyImage.from_file(@image_path)
