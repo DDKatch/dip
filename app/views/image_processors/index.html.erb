@@ -1,0 +1,11 @@
+<p><%= image_tag(@image_name, alt: "rss feed", height: "100", width: "100") %></p>
+
+<% @charts.each do |chart| %>
+<%= area_chart chart,
+                height: "300px",
+                width: "256px",
+								min: 0,
+                max: 20000,
+                discrete: true
+%>
+<% end %>
