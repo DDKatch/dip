@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
+#source '/home/mist/.rvm/gems/ruby-2.3.0/gems/'
 
-gem 'chartkick'
+gem 'chartkick', '2.1.0'
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'chunky_png'
 gem 'mini_magick'
