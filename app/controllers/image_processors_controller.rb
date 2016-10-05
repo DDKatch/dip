@@ -8,36 +8,22 @@ class ImageProcessorsController < ApplicationController
   end
 
   def init_variables
-		@image_name = 'house.png'
-    @image_path = Rails.root.join('app', 'assets', 'images', @image_name)
+    @image_name = []
+    @image_name << 'house.png'
 
-    image1 = MyImage.from_file(@image_path)
+    @image_path = Rails.root.join('app', 'assets', 'images', @image_name[0])
+    image = ChunkyPNG::Image.from_file(@image_path)
 
-    # result = ChunkyPNG::Image.new(width, height, ChunkyPNG::Color::TRANSPARENT)
-    # height.times do |j|
-    #   width.times do |i|
-    #     result[i,j] = img[i,j]#ChunkyPNG::Color.rgba(i,j,1+i*j, 128)
-    #   end
-    # end
-    # result.save('result.png', interlace: true)
+    @charts = []
+    @charts << image.histogram(:bright)
 
-		#image2 = MiniMagick::Image.open(@img_path)
-  	#im_details = image2.details["Histogram"]
-    #im_details.nil? ? p('NIL') : p(im_details)
 
-    r = image1.histogram(:red)
-    g = image1.histogram(:green)
-    b = image1.histogram(:blue)
-    br = image1.histogram(:bright)
+    temp = image.dissection(:e, 100, 200)
+    @image_name << temp.to_data_url
+    @charts << temp.histogram(:bright)
 
-    #binding.pry
-
-    temp = []
-    (0...256).each {|i| temp << (r[i] + g[i] + b[i])/3}
-
-    rgb = Hash[(0...256).zip(temp)]
-
-    @charts = [r,g,b,br,rgb]
+    temp = image.filter(:max)
+    @image_name << temp.to_data_url
+    @charts << temp.histogram(:bright)
   end
-
 end
