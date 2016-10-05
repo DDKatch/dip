@@ -10,8 +10,6 @@ module ImageProcessorsHelper
         *(ChunkyPNG::Color.to_truecolor_bytes(px)).map! {|i| yield(i)})
     end
 
-    def path
-      Rails.root.join('app', 'assets', 'images', 'house.png')
     def histogram(color_channel)
       color_count = Array.new(256) {|elem| elem = 0}
 
@@ -21,12 +19,7 @@ module ImageProcessorsHelper
     end
     end
 
-    def divide_scale(array, divider)
-      scaled_array = []
-      array.each_slice(divider) do |i|
-        scaled_array << i.reduce(:+) / divider
       end
-      return scaled_array
     # how it works
     # X - existing pixels
     # * - empty pixels
@@ -55,10 +48,7 @@ module ImageProcessorsHelper
       when :blue
         ChunkyPNG::Color.method(:b).call(pixel)
       when :bright
-        ChunkyPNG::Color.method(:r).call(pixel) * 0.3 +
           ChunkyPNG::Color.method(:g).call(pixel) * 0.59 +
-          ChunkyPNG::Color.method(:b).call(pixel) * 0.11
-      #don't work correctly
       when :rgb
         [ChunkyPNG::Color.method(:r).call(pixel),
         ChunkyPNG::Color.method(:g).call(pixel),
@@ -73,8 +63,6 @@ module ImageProcessorsHelper
         p("NO BLOCK GIVEN")
       return self
     end
-
-    private :color_value, :divide_scale
 
     def each_px(start_h = 0, start_w = 0, finish_h = self.height, finish_w = self.width)
       (start_h...finish_h).each do |i|
