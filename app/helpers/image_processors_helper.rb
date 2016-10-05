@@ -1,9 +1,26 @@
 module ImageProcessorsHelper
   class ChunkyPNG::Image
 
+    def dissection(type, min = 0, max = 255)
+      result_image = self.clone
+
+      case type
+      when :e then
+        f_min, f_max = min, max
+        result_image.px_map! do |px|
+          color_value(:bright, px) <= f_min ? px = ChunkyPNG::Color.rgb(0,0,0) :
+            f_max <= color_value(:bright, px) ? ChunkyPNG::Color.rgb(255,255,255) :
+              px
+        end
+      when :d then
+        g_min, g_max = min, max
+        result_image.px_map! do |px|
+          change_color(px){|i| i * (g_max - g_min) / 256 + g_min}
         end
       end
 
+      return result_image
+    end
 
     def change_color(px)
       ChunkyPNG::Color.rgb(
@@ -17,9 +34,54 @@ module ImageProcessorsHelper
 
       return Hash[(0...color_count.size).zip(color_count)]
     end
+
+    def filter(name)
+      res_img = self.clone
+      case name
+      when :min then
+        res_img.convolution(res_img.padding, [1, 1, 1,
+                                              1, 1, 1,
+                                              1, 1, 1], :min)
+      when :max then
+        res_img.convolution(res_img.padding, [1, 1, 1,
+                                              1, 1, 1,
+                                              1, 1, 1], :max)
+      when :min_max then
+        filter(:min)
+        filter(:max)
+      when :stamping then
+        res_img.convolution(res_img.padding, [0, 1, 0,
+                                              1, 0, -1,
+                                              0, -1, 0], :reduce){:+}
+      when :lapl_2 then
+        res_img.convolution(res_img.padding, [1, 1, 1,
+                                              1, -8, 1,
+                                              1, 1, 1], :reduce){:+}
+      end
+      return res_img
     end
 
+    def convolution(buf_img, operator, array_func)
+      self.px_map! do |_, i, j|
+        i += 1
+        j += 1
+        h = operator
+        core = [change_color(buf_img[j-1, i-1]){|px| px* h[0]},
+                change_color(buf_img[j, i-1]){|px| px * h[1]},
+                change_color(buf_img[j+1, i-1]){|px| px * h[2]},
+                change_color(buf_img[j-1, i  ]){|px| px * h[3]},
+                change_color(buf_img[j, i  ]){|px| px * h[4]},
+                change_color(buf_img[j+1, i  ]){|px| px * h[5]},
+                change_color(buf_img[j-1, i+1]){|px| px * h[6]},
+                change_color(buf_img[j, i+1]){|px| px * h[7]},
+                change_color(buf_img[j+1, i+1]){|px| px * h[8]}]
+        #   binding.pry
+        block_given? ? new_px = (core.method(array_func).call(yield)).abs : new_px = core.send(array_func)
+        new_px.class == Fixnum ? new_px : new_px.unique!
       end
+      return self
+    end
+
     # how it works
     # X - existing pixels
     # * - empty pixels
@@ -48,7 +110,9 @@ module ImageProcessorsHelper
       when :blue
         ChunkyPNG::Color.method(:b).call(pixel)
       when :bright
+        (ChunkyPNG::Color.method(:r).call(pixel) * 0.3 +
           ChunkyPNG::Color.method(:g).call(pixel) * 0.59 +
+          ChunkyPNG::Color.method(:b).call(pixel) * 0.11).to_i
       when :rgb
         [ChunkyPNG::Color.method(:r).call(pixel),
         ChunkyPNG::Color.method(:g).call(pixel),
@@ -56,8 +120,6 @@ module ImageProcessorsHelper
       end
     end
 
-    def filter(name)
-      self.clone
     def px_map!
       block_given? ? self.each_px {|px, i, j| self[j, i] = yield(self[j, i], i, j)} :
         p("NO BLOCK GIVEN")
