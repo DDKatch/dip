@@ -1,25 +1,21 @@
 module ImageProcessorsHelper
   class ChunkyPNG::Image
 
-    def histogram(color_channel, scale_divider = 1)
-      image_h = self.height
-      image_w = self.width
-      color_count = Array.new(256) {|el| el = 0}
-
-      image_h.times do |i|
-        image_w.times do |j|
-          color_count[color_value(color_channel, self[j, i])] += 1
         end
       end
 
-      div_col_count = divide_scale(color_count, scale_divider)
-      return Hash[(0...div_col_count.size).zip(div_col_count)]
 
-      #binding.pry
     end
 
     def path
       Rails.root.join('app', 'assets', 'images', 'house.png')
+    def histogram(color_channel)
+      color_count = Array.new(256) {|elem| elem = 0}
+
+      self.each_px {|px| color_count[color_value(color_channel, px)] += 1}
+
+      return Hash[(0...color_count.size).zip(color_count)]
+    end
     end
 
     def divide_scale(array, divider)
