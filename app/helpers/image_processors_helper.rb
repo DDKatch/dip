@@ -1,6 +1,15 @@
 module ImageProcessorsHelper
   class ChunkyPNG::Image
 
+    def and
+      return self.clone
+    end
+
+    def self.new_const
+      result_image = ChunkyPNG::Image.new(self.width, self.height)
+      result_image.px_map
+    end
+
     def dissection(type, min = 0, max = 255)
       result_image = self.clone
 
@@ -21,6 +30,8 @@ module ImageProcessorsHelper
 
       return result_image
     end
+
+
 
     def change_color(px)
       ChunkyPNG::Color.rgb(

@@ -1,19 +1,18 @@
-<% @charts.each_with_index do |chart, i|%>
-<%= image_tag(@image_name[i], alt: "rss feed", height: "300", width: "400") %>
-<%= image_tag(@image_name[0], alt: "rss feed", height: "300", width: "400") %>
-<%= area_chart chart,
-                height: "300px",
-                width: "400px",
-								min: 0,
-                max: 20000,
-                discrete: true
-%>
-<%= area_chart @charts[0],
-                height: "300px",
-                width: "400px",
-								min: 0,
-                max: 20000,
-                discrete: true
-%>
-<% end%>
-
+<div class="row">
+	<% @charts.each_with_index do |chart, i|%>
+	  <div class="col-xs-4">
+      <p><div class="image-box bordered text-center">
+        <%= image_tag(@image_name[i]) %></p>
+	  	  <div class="m_body">
+          <h4 class="margin-clear"><%=@image_name[i]%></h4>
+	  	  </div>
+      </div></p>
+      <p><%= area_chart chart,
+	  					width: 500,
+              min: 0,
+              max: 20000,
+              discrete: true %>
+       </p>
+    </div>
+	<% end%>
+</div>

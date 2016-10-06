@@ -17,7 +17,6 @@ class ImageProcessorsController < ApplicationController
     @charts = []
     @charts << image.histogram(:bright)
 
-
     temp = image.dissection(:e, 100, 200)
     @image_name << temp.to_data_url
     @charts << temp.histogram(:bright)
