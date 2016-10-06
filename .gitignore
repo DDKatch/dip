@@ -21,4 +21,10 @@
 .byebug_history
 
 database.yml
-secrets.yml
+doc/
+*.swp
+*~
+.project
+.DS_Store
+.idea
+.secret
