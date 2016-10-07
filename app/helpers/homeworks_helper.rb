@@ -28,9 +28,7 @@ module HomeworksHelper
     end
 
     def self.new_const(image)
-      #binding.pry
-      result_image = ChunkyPNG::Image.new(image.width, image.height)
-      Random.new_seed
+      result_image = image.clone
       random_value = Random.rand(255)
       result_image.px_map! {|px| image.change_color(px){|_|random_value}}
       return result_image
