@@ -1,20 +1,45 @@
 module HomeworksHelper
   class ChunkyPNG::Image
+
+    def *(image)
+      result_image = self.clone
+      result_image.px_map! do |px, i, j|
+        image_pix_v = image.color_value(:rgb, image[j, i]).reverse
+        result_image.change_color(px) do |ch|
+          res_px = ch * yield(image_pix_v.pop)
+          res_px > 255 ? 255 : res_px.abs
+        end
+      end
+      return result_image
+    end
+
+    def +(image)
+      result_image = self.clone
+      result_image.px_map! do |px, i, j|
+        image_pix_v = image.color_value(:rgb, image[j, i]).reverse
+        result_image.change_color(px) do |ch|
+          res_px = ch + yield(image_pix_v.pop)
+          res_px > 255 ? 255 : res_px.abs
+        end
+      end
+      return result_image
+    end
+
     def and(image)
       result_image = self.clone
-      result_image.px_map!{|px, i, j| px & image[j, i]}
+      result_image.px_map!{|px, i, j| px & yield(image[j, i])}
       return result_image
     end
 
     def or(image)
       result_image = self.clone
-      result_image.px_map!{|px, i, j| px | image[j, i]}
+      result_image.px_map!{|px, i, j| px | yield(image[j, i])}
       return result_image
     end
 
     def not(image)
       result_image = self.clone
-      result_image.px_map!{|px, i, j| result_image.change_color(px){|ch| 255 - ch}}
+      result_image.px_map!{|px, i, j| result_image.change_color(px){|ch| 255 - yield(ch)}}
       return result_image
     end
 
@@ -22,7 +47,7 @@ module HomeworksHelper
       result_image = self.clone
       result_image.px_map! do |px, i, j|
         image_pix_v = image.color_value(:rgb, image[j, i]).reverse
-        result_image.change_color(px){|ch| ch ^ image_pix_v.pop}
+        result_image.change_color(px){|ch| ch ^ yield(image_pix_v.pop)}
       end
       return result_image
     end

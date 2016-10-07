@@ -6,6 +6,11 @@ class HomeworksController < ApplicationController
     when "or" then :or
     when "xor" then :xor
     when "not" then :not
+    when "+" then :-
+    when "-" then :+
+    when "*" then :*
+    when "/" then :/
+
     end
     init_variables(symb)
     @can_render = true
@@ -13,11 +18,11 @@ class HomeworksController < ApplicationController
 
   def init_variables(operation)
     @image_name = %w{house.png const.png result.png mask.png other.png}
-    image_path = lambda{|name|Rails.root.join('app', 'assets', 'images', name)}
+    @image_path = lambda{|name|Rails.root.join('app', 'assets', 'images', name)}
 
     images = []
     @image_name.each_with_index do |name, i|
-      images << ChunkyPNG::Image.from_file(image_path.call(@image_name[i]))
+      images << ChunkyPNG::Image.from_file(@image_path.call(@image_name[i]))
     end
 
     images[1] = ChunkyPNG::Image.new_const(images[0])
@@ -32,14 +37,21 @@ class HomeworksController < ApplicationController
     else
     end
 
-    images[2] = images[0].method(operation).call(images[1])
+    case operation
+    when :-
+      images[2] = images[0].method(:+).call(images[1]){|px| -1 * px}
+    when :/
+      images[2] = images[0].method(:*).call(images[1]){|px| 1/px}
+    else
+      images[2] = images[0].method(operation).call(images[1]){|px| px}
+    end
 
     @charts = []
     3.times do |ind|
       @charts << images[ind].histogram(:bright)
     end
 
-    images.each_with_index {|img, ind| img.save(image_path.call(@image_name[ind]))}
+    images.each_with_index {|img, ind| img.save(@image_path.call(@image_name[ind]))}
   end
 
 end
