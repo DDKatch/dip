@@ -1,19 +1,5 @@
-<% loop do @can_render && break; delay(500) end %>
 <div class="row">
 	<% @charts.each_with_index do |chart, i|%>
-	  <div class="col-xs-4">
-      <p><div class="image-box bordered text-center">
-        <%= image_tag(@image_name[i]) %></p>
-	  	  <div class="m_body">
-          <h4 class="margin-clear"><%=@image_name[i]%></h4>
-	  	  </div>
-      </div></p>
-      <p><%= area_chart chart,
-	  					width: 500,
-              min: 0,
-              max: 20000,
-              discrete: true %>
-       </p>
-    </div>
-	<% end%>
+  <%= render 'homeworks/image_and_histogram', chart: chart, i: i  %>
+  <% end%>
 </div>
