@@ -3,6 +3,10 @@ class HomeworksController < ApplicationController
     case params[:operation]
     when "and"
       init_variables(:and)
+    when "or"
+      init_variables(:or)
+    when "not"
+      init_variables(:not)
     else
       init_variables(:filter)
     end
@@ -20,17 +24,19 @@ class HomeworksController < ApplicationController
 
     case operation
     when :and || :or || :not || :add_c || :mult_c || :slice
-      @image_name << 'const'
-      @image_path = Rails.root.join('app', 'assets', 'images', @image_name[1] + '.png')
-      ChunkyPNG::Image.new_const.save(@image_path)
+      @image_name << 'const.png'
+      @image_path = Rails.root.join('app', 'assets', 'images', @image_name[1])
+      (ChunkyPNG::Image.new_const(image)).save(@image_path)
     when :add_p || :mult_p
-      @image_name << 'image'
+      @image_name << 'image.png'
     when :mask
-      @image_name << 'mask'
-      @image_path = Rails.root.join('app', 'assets', 'images', @image_name[1] + '.png')
-      ChunkyPNG::Image.new_mask.save(@image_path)
+      @image_name << 'mask.png'
+      @image_path = Rails.root.join('app', 'assets', 'images', @image_name[1])
+      (ChunkyPNG::Image.new_mask(image)).save(@image_path)
     else
-      @image_name << 'home'
+      @image_name << 'const.png'
+      @image_path = Rails.root.join('app', 'assets', 'images', @image_name[1])
+      (ChunkyPNG::Image.new_const(image)).save(@image_path)
     end
 
     const_or_img_or_msk = ChunkyPNG::Image.from_file(@image_path)
