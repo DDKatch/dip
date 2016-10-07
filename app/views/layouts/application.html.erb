@@ -10,6 +10,7 @@
 
 	<body>
 	  <%= render 'layouts/header' %>
+    <% loop do @can_render && break; end %>
     <div class="container">
     	<%= yield %>
     </div>
