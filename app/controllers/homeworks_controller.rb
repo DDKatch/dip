@@ -1,7 +1,13 @@
 class HomeworksController < ApplicationController
   def index
     @can_render = false
-    init_variables(params[:operation].to_sym)
+    symb = case params[:operation]
+    when "and" then :and
+    when "or" then :or
+    when "xor" then :xor
+    when "not" then :not
+    end
+    init_variables(symb)
     @can_render = true
   end
 
