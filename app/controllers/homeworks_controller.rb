@@ -33,7 +33,6 @@ class HomeworksController < ApplicationController
       @images[2] = @images[0].method(operation).call(@images[1]){|px| px}
     end
     upload_images
-    init_variables
   end
 
   def upload_images
@@ -62,8 +61,5 @@ class HomeworksController < ApplicationController
     @charts = init_charts
   end
 
-  def show
-    init_variables
-  end
 end
 
