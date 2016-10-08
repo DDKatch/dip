@@ -20,7 +20,6 @@
 # Ignore Byebug command history file.
 .byebug_history
 
-cloudinary.yml
 database.yml
 doc/
 *.swp
