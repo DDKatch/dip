@@ -1,0 +1,19 @@
+---
+development:
+  cloud_name: dx2bc3nc6
+  api_key: '334162682333797'
+  api_secret: 6TyPFKB0H_ilODU-7mLAHHTynrg
+  enhance_image_tag: true
+  static_image_support: false
+production:
+  cloud_name: dx2bc3nc6
+  api_key: '334162682333797'
+  api_secret: 6TyPFKB0H_ilODU-7mLAHHTynrg
+  enhance_image_tag: true
+  static_image_support: true
+test:
+  cloud_name: dx2bc3nc6
+  api_key: '334162682333797'
+  api_secret: 6TyPFKB0H_ilODU-7mLAHHTynrg
+  enhance_image_tag: true
+  static_image_support: false
