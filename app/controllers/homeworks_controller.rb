@@ -24,6 +24,7 @@ class HomeworksController < ApplicationController
     when :mask then
       @images[1] = ChunkyPNG::Image.new_mask(@images[0])
     when :not then
+      @images[1] = ChunkyPNG::Image.new_mask(@images[0])
     when :-
       @images[2] = @images[0].method(:+).call(@images[1]){|px| -1 * px}
     when :/
@@ -60,6 +61,5 @@ class HomeworksController < ApplicationController
     @images = init_images
     @charts = init_charts
   end
-
 end
 
